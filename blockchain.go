@@ -39,7 +39,7 @@ func makeBlock() (string, Block){
 	block := Block{}
 
 	//Find suitable hash, get the hash and the used nonce + text back
-	block.HashPoW, block.textNoncePoW = pow(text, "000000000")
+	block.HashPoW, block.textNoncePoW = pow(text, "000000")
 
 	//Define Header elements
 	block.Index = int64(len(Blockchain))
@@ -98,9 +98,6 @@ func makeGenesisBlock() Block{
 
 
 	//make hash of Header elements
-	/*hash := sha512.New()
-	hash.Write([]byte(strconv.FormatInt(block.Index, 10)+block.Timestamp.String()+block.HashPoW+block.textNoncePoW+block.PrevHashHeader))
-	block.hashHeader = hex.EncodeToString(hash.Sum(nil))*/
 	block.hashHeader = makeBlockHash(block)
 
 	//Define Data
