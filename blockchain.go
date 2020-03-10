@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	crand "crypto/rand"
 	"crypto/sha512"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -11,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 )
 
 //Define how a Block should look like
@@ -33,13 +36,14 @@ type Block struct{
 var Blockchain []Block
 
 
-func makeBlock() (string, Block){
+func makeBlock(nulls string) (string, Block, uint64){
 	//use random text in PoW
-	text := RandStringRunes()
+	text := GenerateRandomString()//RandStringRunes()
+	var count uint64
 	block := Block{}
 
 	//Find suitable hash, get the hash and the used nonce + text back
-	block.HashPoW, block.textNoncePoW = pow(text, "000000")
+	block.HashPoW, block.textNoncePoW, count = pow(text, nulls)
 
 	//Define Header elements
 	block.Index = int64(len(Blockchain))
@@ -51,8 +55,11 @@ func makeBlock() (string, Block){
 
 	//Define Payload, a bit more than one string please;)
 	payload := ""; i := 0
-	for i <= 10{
-		payload += " "+RandStringRunes()
+	for i <= 30{
+		payload += " "+GenerateRandomString()//RandStringRunes()
+		if i == 15{
+			payload += "\n"
+		}
 		i++
 	}
 	block.payload = payload		//these normally are transactions!
@@ -62,7 +69,7 @@ func makeBlock() (string, Block){
 		block.Index,block.Timestamp, block.HashPoW, block.textNoncePoW,block.PrevHashHeader,block.hashHeader,block.payload)
 
 	//return the output and block
-	return output, block
+	return output, block, count
 }
 
 //function to make hash of the block header
@@ -106,11 +113,13 @@ func makeGenesisBlock() Block{
 }
 
 //proof of work function
-func pow(text string, nulls string) (hasht string, textNonce string){
+func pow(text string, nulls string) (hasht string, textNonce string, count uint64){
 	//the nonce can be very large, therefore unsigned int 64bit -> This means the nonce can be up to 2**64 bits long. This should be sufficient.
-	var nonce uint64 = uint64(rand.Intn(1000000000))
-
+	rand.Seed(time.Now().UnixNano())
+	var nonce uint64 = uint64(rand.Int63n(1000000000))
+	count = 0
 	//endless for loop until hash is found
+	//count++
 	for {
 		hash := sha512.New()
 		hash.Write([]byte(text+strconv.FormatUint(nonce, 10)))
@@ -121,11 +130,12 @@ func pow(text string, nulls string) (hasht string, textNonce string){
 		if strings.HasPrefix(hasht, nulls){
 			//fmt.Println("Hash found! ",hasht)
 			//fmt.Println("Text and Nonce: ",text," + ",nonce)
-			return hasht, text+strconv.FormatUint(nonce, 10)
+			return hasht, text+strconv.FormatUint(nonce, 10), count
 		}
 		hash.Reset()
-		//if not nonce will be incremented
-		nonce += 1
+		//if not, nonce will be incremented
+		nonce++
+		count++
 	}
 }
 
@@ -143,27 +153,40 @@ func writeBlockToBlockchainFile(file io.Writer, output string) error{
 	return nil
 }
 
-//make random strings of length 10 for hash and payload
-func RandStringRunes() string {
-	n := 10
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!=?/(),.+-#")
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
-	}
-	return string(b)
+
+// GenerateRandomString returns a URL-safe, base64 encoded
+// securely generated random string.
+func GenerateRandomString() string {
+	b := GenerateRandomBytes(12)
+	return base64.URLEncoding.EncodeToString(b)		//encode random byte array to base64 encoding
 }
 
-//automatically adjust the difficulty of PoW
-func adjustDifficulty(timestamp time.Duration) string{
-	//adjust difficulty of PoW automatically by using timestamp (time to make new block)
-	//will be implemented soon
-	return ""
+func GenerateRandomBytes(n int) []byte {
+	b := make([]byte, n)		//new byte array of length n
+	_, err := crand.Read(b)		//fill array with random
+	if err != nil {				//if error print
+		println(err)
+	}
+	return b					//return array
+}
+
+//calculate hashrate of last created block
+func calculateHashrate(timestamp time.Duration, count uint64)string{
+	if timestamp.Milliseconds() >= 1{
+		//calculate using count of hashes divided by block generation duration
+		hashrate := count/uint64(timestamp.Milliseconds())
+		//fmt.Println(uint64(timestamp.Milliseconds()))
+		//fmt.Println(count)
+		returnHashrate := "Hashrate: "+strconv.FormatUint(hashrate, 10)+" H/ms (Hashes per millisecond)"
+		return returnHashrate
+	}else{
+		return "Hashrate: "+strconv.FormatUint(count, 10)+" H/ms (Hashes per millisecond)"
+	}
 }
 
 func run(times int) error{
 	//create output file
-	file, err := os.Create("blockchain.txt")
+	file, err := os.Create("blckchn.txt")
 	//fmt.Println(err)
 	if err != nil{
 		return err
@@ -174,9 +197,8 @@ func run(times int) error{
 	for i != times{
 		start := time.Now()
 
-		output, newBlock := makeBlock()
+		output, newBlock, count := makeBlock("00000")
 		fmt.Println(output)
-		//return output
 
 		//check if new Block is valid
 		isValid := isNewBlockValid(newBlock)
@@ -198,10 +220,13 @@ func run(times int) error{
 		//elapsed shows how long the block generation took
 		elapsed := t.Sub(start)
 		outputElapsed := "Time elapsed: "+elapsed.String()
+		//calculate the Hashrate of this block
+		hashRate := calculateHashrate(elapsed,count)
+		writeBlockToBlockchainFile(file,hashRate)
 		writeBlockToBlockchainFile(file,outputElapsed)
+		fmt.Println("Count: ",count)
+		fmt.Println(hashRate)
 		fmt.Print("Time to make new Block: ",elapsed,"\n\n")
-		_ = adjustDifficulty(elapsed)
-
 		i++
 	}
 	file.Close()
@@ -218,6 +243,7 @@ func main(){
 	var times int
 	fmt.Println("Starting... How much Blocks would you like to generate? ")
 	_, err:= fmt.Scan(&times)
+
 	if err != nil{
 		return
 	}

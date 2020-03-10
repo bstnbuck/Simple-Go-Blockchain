@@ -19,6 +19,5 @@ That's all, depending on the difficulty it may take a while until an output foll
 * The Proof-of-Work function uses a random string with a incremented Nonce (type uInt64) as hashed operators.
 
 ### The following is still being implemented
-* AI to automatically adjust the difficulty.
 * Entering some data while executing proof of work.
-* Kotlin version
+* Maybe Kotlin version
