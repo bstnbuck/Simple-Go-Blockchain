@@ -116,7 +116,7 @@ func makeGenesisBlock() Block{
 func pow(text string, nulls string) (hasht string, textNonce string, count uint64){
 	//the nonce can be very large, therefore unsigned int 64bit -> This means the nonce can be up to 2**64 bits long. This should be sufficient.
 	rand.Seed(time.Now().UnixNano())
-	var nonce uint64 = uint64(rand.Int63n(1000000000))
+	var nonce = uint64(rand.Int63n(1000000000))
 	count = 0
 	//endless for loop until hash is found
 	//count++
@@ -146,10 +146,10 @@ func writeBlockToBlockchainFile(file io.Writer, output string) error{
 
 	//output is same as readable output in makeBlock function
 	_, err := fmt.Fprintf(writer, "%v\n\n", output)
+	err = writer.Flush()
 	if err != nil{
 		return err
 	}
-	writer.Flush()
 	return nil
 }
 
@@ -185,12 +185,20 @@ func calculateHashrate(timestamp time.Duration, count uint64)string{
 }
 
 func run(times int) error{
+
 	//create output file
-	file, err := os.Create("blckchn.txt")
+	filename := "blckchn.txt"
+	file, err := os.Create(filename)
 	//fmt.Println(err)
 	if err != nil{
 		return err
 	}
+	//close file as long as no new block is generated
+	err = file.Close()
+	if err != nil{
+		return err
+	}
+
 
 	//create ... times new blocks
 	i:= 0
@@ -206,30 +214,39 @@ func run(times int) error{
 			//if true append it to the actual blockchain
 			Blockchain = append(Blockchain,newBlock)
 			fmt.Println("Block valid!")
+
 			//and file...
-			err := writeBlockToBlockchainFile(file, output)
+			file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0755)
+			if err != nil {
+				return err
+			}
+			err = writeBlockToBlockchainFile(file, output)
 			//fmt.Println(err)
+			if err != nil {
+				return err
+			}
+
+			t := time.Now()
+			//elapsed shows how long the block generation took
+			elapsed := t.Sub(start)
+			outputElapsed := "Time elapsed: "+elapsed.String()+"\n"
+
+			//calculate the Hashrate of this block
+			hashRate := calculateHashrate(elapsed,count)
+			err = writeBlockToBlockchainFile(file,hashRate)
+			err = writeBlockToBlockchainFile(file,outputElapsed)
+			fmt.Println("Count: ",count)
+			fmt.Println(hashRate)
+			fmt.Print("Time to make new Block: ",elapsed,"\n\n")
+			i++
+			err = file.Close()
 			if err != nil{
 				return err
 			}
 		}else{
 			fmt.Println("Last Block isn't valid, so it will not append to the Blockchain!")
 		}
-
-		t := time.Now()
-		//elapsed shows how long the block generation took
-		elapsed := t.Sub(start)
-		outputElapsed := "Time elapsed: "+elapsed.String()
-		//calculate the Hashrate of this block
-		hashRate := calculateHashrate(elapsed,count)
-		writeBlockToBlockchainFile(file,hashRate)
-		writeBlockToBlockchainFile(file,outputElapsed)
-		fmt.Println("Count: ",count)
-		fmt.Println(hashRate)
-		fmt.Print("Time to make new Block: ",elapsed,"\n\n")
-		i++
 	}
-	file.Close()
 	return nil
 }
 
@@ -245,10 +262,12 @@ func main(){
 	_, err:= fmt.Scan(&times)
 
 	if err != nil{
-		return
+		fmt.Println("Error in Input: ",err)
 	}
 	fmt.Println("Started at: ",time.Now())
-	run(times)
-
+	err = run(times)
+	if err != nil{
+		fmt.Println("Error in RUN: ",err)
+	}
 	//fmt.Println(Blockchain)
 }
