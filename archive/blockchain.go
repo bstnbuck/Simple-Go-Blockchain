@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"math/big"
 	"math/rand"
 	"os"
 	"strconv"
@@ -15,6 +16,7 @@ import (
 	"time"
 
 )
+
 
 //Define how a Block should look like
 type Block struct{
@@ -114,15 +116,18 @@ func makeGenesisBlock() Block{
 
 //proof of work function
 func pow(text string, nulls string) (hasht string, textNonce string, count uint64){
-	//the nonce can be very large, therefore unsigned int 64bit -> This means the nonce can be up to 2**64 bits long. This should be sufficient.
+	//the nonce can be very large, therefore big int -> This means the nonce can be up to theoretical infinity bits long. This should be sufficient. :D
 	rand.Seed(time.Now().UnixNano())
-	var nonce = uint64(rand.Int63n(1000000000))
+	var nonce = big.NewInt(rand.Int63n(1000000000))	//edit 24.03.
+	//var nonce = uint64(rand.Int63n(1000000000))		//nonce can be theoretical up to 512 bit, uint64 only 64bit, therefore big integer -> edit 24.03.
+
 	count = 0
 	//endless for loop until hash is found
-	//count++
+	hash := sha512.New()		//hash initialization before hashing -> edit 23.03.20
 	for {
-		hash := sha512.New()
-		hash.Write([]byte(text+strconv.FormatUint(nonce, 10)))
+		//hash := sha512.New() 	//hash initialization before hashing -> edit 23.03.20
+		hash.Write([]byte(text+nonce.String()))
+		//hash.Write([]byte(text+strconv.FormatUint(nonce, 10)))
 		hasht := hex.EncodeToString(hash.Sum(nil))
 		//fmt.Println(hasht)
 
@@ -130,11 +135,13 @@ func pow(text string, nulls string) (hasht string, textNonce string, count uint6
 		if strings.HasPrefix(hasht, nulls){
 			//fmt.Println("Hash found! ",hasht)
 			//fmt.Println("Text and Nonce: ",text," + ",nonce)
-			return hasht, text+strconv.FormatUint(nonce, 10), count
+			return hasht, text+nonce.String(), count						//edit 24.03.
+			//return hasht, text+strconv.FormatUint(nonce, 10), count		//edit 24.03.
 		}
 		hash.Reset()
 		//if not, nonce will be incremented
-		nonce++
+		nonce.Add(nonce,big.NewInt(1))		//edit 24.03.
+		//nonce++								//edit 24.03.
 		count++
 	}
 }
@@ -184,10 +191,19 @@ func calculateHashrate(timestamp time.Duration, count uint64)string{
 	}
 }
 
-func run(times int) error{
+//make a string of leading hex nulls. Input is the entered integer number by user
+func makeStringNulls(nulls int) (strnulls string){
+	for i := 0; i<nulls; i++{
+		strnulls+="0"
+	}
+	return strnulls
+}
 
+func run(times, nulls int) error{
+
+	strnulls := makeStringNulls(nulls)
 	//create output file
-	filename := "blckchn.txt"
+	filename := "blckchn_36bit_2.txt"
 	file, err := os.Create(filename)
 	//fmt.Println(err)
 	if err != nil{
@@ -199,13 +215,12 @@ func run(times int) error{
 		return err
 	}
 
-
 	//create ... times new blocks
 	i:= 0
 	for i != times{
 		start := time.Now()
 
-		output, newBlock, count := makeBlock("00000")
+		output, newBlock, count := makeBlock(strnulls)
 		fmt.Println(output)
 
 		//check if new Block is valid
@@ -257,15 +272,22 @@ func main(){
 	genesisBlock := makeGenesisBlock()
 	Blockchain = append(Blockchain,genesisBlock)
 
-	var times int
-	fmt.Println("Starting... How much Blocks would you like to generate? ")
-	_, err:= fmt.Scan(&times)
-
+	var times, nulls int
+	fmt.Println("Starting... How much leading hex nulls? ")
+	_, err:= fmt.Scan(&nulls)
 	if err != nil{
 		fmt.Println("Error in Input: ",err)
 	}
+
+
+	fmt.Println("How much Blocks would you like to generate? ")
+	_, err= fmt.Scan(&times)
+	if err != nil{
+		fmt.Println("Error in Input: ",err)
+	}
+
 	fmt.Println("Started at: ",time.Now())
-	err = run(times)
+	err = run(times, nulls)
 	if err != nil{
 		fmt.Println("Error in RUN: ",err)
 	}
