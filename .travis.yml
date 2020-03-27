@@ -2,4 +2,8 @@ language: go
 
 go:
 - 1.14
+- tip
 
+script:
+  - cd src
+  - go test -v ./...
