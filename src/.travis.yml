@@ -3,6 +3,3 @@ language: go
 go:
 - 1.14
 - master
-
-script:
-- go test -v src/
