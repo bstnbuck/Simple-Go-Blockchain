@@ -6,4 +6,4 @@ go:
 
 script:
   - cd src
-  - go test -v ./...
+  - go build
