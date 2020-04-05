@@ -45,6 +45,7 @@ func makeBlock(nulls string) (string, Block, uint64){
 	//make hash of Header elements
 	block.hashHeader = makeBlockHash(block)
 
+	/* removed at 05/04/20, instead use real transactions
 	//Define Payload, a bit more than one string please;)
 	payload := ""; i := 0
 	for i <= 30{
@@ -54,10 +55,11 @@ func makeBlock(nulls string) (string, Block, uint64){
 		}
 		i++
 	}
-	block.payload = payload		//these normally are transactions!
+	*/
+	block.payload = getTransactions()
 
 	//make readable output
-	output := fmt.Sprintf("New Block Index:%v Timestamp:%v \nHashPoW:%v \nText&Nonce:%v \nPrevHashHeader:%v \nHashHeader:%v \nData:%v",
+	output := fmt.Sprintf("New Block Index:%v Timestamp:%v \nHashPoW:%v \nText&Nonce:%v \nPrevHashHeader:%v \nHashHeader:%v \nData:\n%v",
 		block.Index,block.Timestamp, block.HashPoW, block.textNoncePoW,block.PrevHashHeader,block.hashHeader,block.payload)
 
 	//return the output and block

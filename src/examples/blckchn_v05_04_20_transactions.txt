@@ -1,0 +1,80 @@
+New Block Index:1 Timestamp:2020-04-05 17:05:42.4214308 +0200 CEST m=+4.200933201 
+HashPoW:000064b3ce9a0b4a8f9794e63f50ea4d01c2c72087824ee9dcfeeb0e9014d633349b4d6375a694ffb981562b23e45234015b108a115e503fc2d1dac57126073b 
+Text&Nonce:1BjPePadrteYKt4r279214124 
+PrevHashHeader:5e27e26081b4b3fe156da698513f76f6fff7acb683e77f0994f55e8e253fcfe11082244445f206b2809e9971f9dfca741d36d106d8beea639c547dcfb6e2c453 
+HashHeader:156a9cd4ef668a68cd13115f675e8f01ce7cbe2c83afdf8b7aea90e6dae6ae21baab687fbf7525cb51907243cc3c718a5ae5d34d9f64c0b3aab59653e3209b52 
+Data:
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:wrxC1pYoDPMLqZnL To:xT4iIgoFlxhvw2NU
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:diHWRi4v_tT6pIlx To:xxMWcFCIXXiIN1uU
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:zPDK4w0mhICbCp3k To:bxUNoGuTXaIP9WiG
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:vQCwWcpeYOsN6eVN To:mxKSQIVupSeuOjGR
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:nuvt3KmzCLFDS6hk To:sYXF2wSMAnlxTi4l
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:FYePUlpnrFg_ErTM To:AmZ8OjWkaViYkeyk
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:5cfgoBj9Cr_557iy To:hdsyVr7ZT0w60PRS
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:ab7ew4vkLiEsr0NF To:n9tT_VqJ9pRw18Im
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:SmZutMMA_poUjt5k To:0IlolzZhHuIYpXsu
+ Transfer:0.874700
+
+
+Hashrate: 728 H/ms (Hashes per millisecond)
+
+Time elapsed: 85.0175ms
+
+
+New Block Index:2 Timestamp:2020-04-05 17:05:42.5274527 +0200 CEST m=+4.306955101 
+HashPoW:000056f186e35a17cbd9f70b89fa50e1ef6ee30189f947d3b625f655d0c387d177b955ce55b4aaf91ae45349c8adecf2ade98c512dd084e7a39dedfe0e9c954e 
+Text&Nonce:3QMBdxSmm8HkBa4782425571 
+PrevHashHeader:156a9cd4ef668a68cd13115f675e8f01ce7cbe2c83afdf8b7aea90e6dae6ae21baab687fbf7525cb51907243cc3c718a5ae5d34d9f64c0b3aab59653e3209b52 
+HashHeader:4892329a60d039355fa8e9943099cdc9a1d390d4f2ef7100e1023540e5fdb274f3d19a7778876ab5818ab090ec78198b30c68a9023cd48b2913e74d2c348eef3 
+Data:
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:UEG2eDDR0qpgZyaZ To:rIyE_6gQZBIYE2_X
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:buFo-zaITiUp8buu To:PZTvG-1P0L1SQqhr
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:rDhrnC5r5fKoCumc To:T9LxiI9h-0ZHLW7s
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:5IoGEz5ifSNIh9MI To:wdW1Adtwgy5IKHgw
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:fkSx48yAyTndDYuR To:aEkniYE8yYurV8fD
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:41GMTvoT2PoDRw4i To:1NJ5D8Fktw2Nsn3n
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:EhSPE4PS2zHwDPMk To:rjSuGMHGu3-V1Clv
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:-6GNkfld5PFZRXAQ To:FDGC4IFxt5oBnWDi
+ Transfer:0.874700
+New Transaction Timestamp:2020-04-05 16:35:13.904454 +0200 CEST m=+5.993388701
+ From:8WNhmrwk0KAGPxfl To:ierQWZLsdV6J_bXQ
+ Transfer:0.874700
+
+
+Hashrate: 819 H/ms (Hashes per millisecond)
+
+Time elapsed: 105.0241ms
+
+

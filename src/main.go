@@ -6,7 +6,7 @@ import (
 )
 
 func main(){
-	fmt.Println("Go Blockchain!")
+	fmt.Println("Simple Go Blockchain!")
 	//generate genesis block and append it to the blockchain
 	genesisBlock := makeGenesisBlock()
 	Blockchain = append(Blockchain,genesisBlock)
@@ -18,8 +18,7 @@ func main(){
 		fmt.Println("Error in Input: ",err)
 	}
 
-
-	fmt.Println("How much Blocks would you like to generate? ")
+	fmt.Println("How many blocks should be generated? ")
 	_, err= fmt.Scan(&times)
 	if err != nil{
 		fmt.Println("Error in Input: ",err)
@@ -30,5 +29,11 @@ func main(){
 	if err != nil{
 		fmt.Println("Error in RUN: ",err)
 	}
-	//fmt.Println(Blockchain)
+
+	fmt.Println("All Blocks generated! Press ENTER to continue... ")
+	_ ,err = fmt.Scanln()
+	//_ ,err = fmt.Scanln()		//only for windows
+	if err != nil {
+		fmt.Println(err)
+	}
 }

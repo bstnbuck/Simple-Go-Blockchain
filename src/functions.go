@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"time"
 )
@@ -60,4 +61,62 @@ func makeStringNulls(nulls int) (strnulls string){
 		strnulls+="0"
 	}
 	return strnulls
+}
+
+//adds last 10 generated transaction with lifo-principle (last in -> first out) to the payload of new generated block
+func getTransactions()string{
+	filename := "src/addTransaction/payload.gop"
+	//If file doesn't exist, print error and return
+	if _, err := os.Stat(filename); err != nil{
+		fmt.Println("Error getTransactions: ",err)
+		return ""
+	}
+
+	//if exist, open file
+	file, err := os.OpenFile(filename, os.O_RDONLY, 0755)
+	if err != nil {
+		 fmt.Println("Error getTransactions: ",err)
+	}
+
+	scanner := bufio.NewScanner(file)
+	counter := 27
+	progress := 0
+	var output, text string
+	//scan first 10 transactions (27 lines) into output string, all others that follow save to another variable
+	for scanner.Scan() {
+		if counter > progress {
+			output += scanner.Text()+"\n"
+			progress++
+		}else{
+			text += scanner.Text()+"\n"
+		}
+	}
+	err = file.Close()
+	if err != nil {
+		fmt.Println("Error getTransactions: ",err)
+	}
+
+	//create file new (clear it) and move all others that follow after the 10 transactions into it
+	file, err = os.Create(filename)
+	file, err = os.OpenFile(filename, os.O_WRONLY, 0755)
+	if err != nil {
+		fmt.Println("Error getTransactions: ",err)
+	}
+	writer := bufio.NewWriter(file)
+	_,err =file.WriteString(text)
+	if err != nil{
+		fmt.Println("Error getTransactions: ",err)
+	}
+
+	err = writer.Flush()
+	if err != nil{
+		fmt.Println("Error getTransactions: ",err)
+	}
+
+	err = file.Close()
+	if err != nil {
+		fmt.Println("Error getTransactions: ",err)
+	}
+
+	return output
 }
