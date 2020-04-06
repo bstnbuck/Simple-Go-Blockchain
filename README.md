@@ -5,13 +5,14 @@
 >**Not all functions are implemented yet! This program should only show the principle of blockchains.**
 
 The Blockchain is programmed in Go. As hash algorithm is used SHA512.
-
-**Entering some data while executing proof of work now works.**
+**Entering some data while executing proof of work now works!**
 
 ## Installation
 Nothing to install! It's Go! :D
 
 ## Usage
+`git clone https://github.com/bstnbuck/Simple-Go-Blockchain.git`
+
 Execute/Debug using **GOLand**:
 * If you want to execute the Blockchain change to the src directory and execute directory.
 * If you want to execute AddTransaction change to the src/addTransaction directory and execute main.go.
@@ -36,11 +37,13 @@ To build the program run following commands:
 1.  After starting you will be asked how much leading hex-Nulls the hash should have. Enter a decimal like 8, this will be changed to '00000000' <- leading nulls
 2.  After that you will be asked how many blocks you want to generate. Please enter a natural number like 0, 1, 25, 199, ...
 
+That's all, depending on the difficulty (leading hex nulls) it may take a while until an output follows.
+
+
 #### AddTransaction:
+AddTransaction adds automatically or manually new transactions
 1. After starting you will be asked which mode you want to execute. 1 = generate automatically new transactions 2 = manually
 2. The rest is self-explanatory.
-
-That's all, depending on the difficulty (leading hex nulls) it may take a while until an output follows.
 
 ### Information
 * The Code is self-explanatory commented.
