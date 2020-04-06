@@ -6,27 +6,31 @@
 
 The Blockchain is programmed in Go. As hash algorithm is used SHA512.
 
+**Entering some data while executing proof of work now works.**
+
 ## Installation
 Nothing to install! It's Go! :D
 
-**Entering some data while executing proof of work now works.**
-
 ## Usage
-* If you want to execute the Blockchain change to the src directory and execute main.go
-* If you want to execute AddTransaction change to the src/addTransaction directory and execute main.go
+Execute/Debug using **GOLand**:
+* If you want to execute the Blockchain change to the src directory and execute directory.
+* If you want to execute AddTransaction change to the src/addTransaction directory and execute main.go.
+* Build Configuration: **Run Kind**: Directory; **Directory**: src or src/addTransaction; **Working Directory**: HOME (directory in which all files are stored).
 
-To execute the program run following commands:
+Using **VS-Code**:
+Using VS-Code is difficult because input does not work properly.
 
+To build the program run following commands:
 #### Linux:    
   * go build
+  * move both executable files to HOME-directory (outside src)
   * ./src or ./addTransaction
 
 #### Windows:  
 
   * go build
+  * move both executable files to HOME-directory (outside src)
   * src.exe or addTransaction.exe
-
-Or Debug it in VS-Code or GOLand.
 
 #### Blockchain:
 1.  After starting you will be asked how much leading hex-Nulls the hash should have. Enter a decimal like 8, this will be changed to '00000000' <- leading nulls
