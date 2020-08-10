@@ -217,7 +217,7 @@ func addTransaction(file io.Writer, transaction []string) error {
 	return nil
 }
 
-//generates some random floats
+//GenerateRandomFloat generates some random floats
 func GenerateRandomFloat() float32 {
 	rand.Seed(time.Now().UnixNano())
 	random := rand.Float32()
@@ -232,6 +232,7 @@ func GenerateRandomString() string {
 	return base64.URLEncoding.EncodeToString(b) //encode random byte array to base64 encoding
 }
 
+//GenerateRandomBytes generates some random bytes for random string
 func GenerateRandomBytes(n int) []byte {
 	b := make([]byte, n)    //new byte array of length n
 	_, err := crand.Read(b) //fill array with random
