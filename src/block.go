@@ -8,13 +8,13 @@ import (
 	"time"
 )
 
-//Define how a Block should look like
-type Block struct{
+//Block define how a Block should look like
+type Block struct {
 	//Header elements
-	Index int64
-	Timestamp time.Time
-	HashPoW string
-	textNoncePoW string
+	Index          int64
+	Timestamp      time.Time
+	HashPoW        string
+	textNoncePoW   string
 	PrevHashHeader string
 
 	//Hash of the header
@@ -27,10 +27,9 @@ type Block struct{
 //Blockchain is a Array of valid Blocks
 var Blockchain []Block
 
-
-func makeBlock(nulls string) (string, Block, uint64){
+func makeBlock(nulls string) (string, Block, uint64) {
 	//use random text in PoW
-	text := GenerateRandomString()//RandStringRunes()
+	text := GenerateRandomString() //RandStringRunes()
 	var count uint64
 	block := Block{}
 
@@ -60,32 +59,31 @@ func makeBlock(nulls string) (string, Block, uint64){
 
 	//make readable output
 	output := fmt.Sprintf("New Block Index:%v Timestamp:%v \nHashPoW:%v \nText&Nonce:%v \nPrevHashHeader:%v \nHashHeader:%v \nData:\n%v",
-		block.Index,block.Timestamp, block.HashPoW, block.textNoncePoW,block.PrevHashHeader,block.hashHeader,block.payload)
+		block.Index, block.Timestamp, block.HashPoW, block.textNoncePoW, block.PrevHashHeader, block.hashHeader, block.payload)
 
 	//return the output and block
 	return output, block, count
 }
 
 //function to make hash of the block header
-func makeBlockHash(block Block) string{
+func makeBlockHash(block Block) string {
 	hash := sha512.New()
-	hash.Write([]byte(strconv.FormatInt(block.Index, 10)+block.Timestamp.String()+block.HashPoW+block.textNoncePoW+block.PrevHashHeader))
+	hash.Write([]byte(strconv.FormatInt(block.Index, 10) + block.Timestamp.String() + block.HashPoW + block.textNoncePoW + block.PrevHashHeader))
 	hashHeader := hex.EncodeToString(hash.Sum(nil))
 	return hashHeader
 }
 
 //proof if the new created block is valid
-func isNewBlockValid(newBlock Block) bool{
+func isNewBlockValid(newBlock Block) bool {
 	lastBlock := Blockchain[len(Blockchain)-1]
-	if lastBlock.hashHeader == newBlock.PrevHashHeader && lastBlock.Index+1 == newBlock.Index && newBlock.hashHeader == makeBlockHash(newBlock){
+	if lastBlock.hashHeader == newBlock.PrevHashHeader && lastBlock.Index+1 == newBlock.Index && newBlock.hashHeader == makeBlockHash(newBlock) {
 		return true
-	}else{
-		return false
 	}
+	return false
 }
 
 //initialise the blockchain with a first block, filled with null elements
-func makeGenesisBlock() Block{
+func makeGenesisBlock() Block {
 	text := "Welcome to this Go-Blockchain!"
 	block := Block{}
 
@@ -97,7 +95,6 @@ func makeGenesisBlock() Block{
 	block.Timestamp = time.Now()
 	block.PrevHashHeader = "0"
 
-
 	//make hash of Header elements
 	block.hashHeader = makeBlockHash(block)
 
@@ -105,5 +102,3 @@ func makeGenesisBlock() Block{
 	block.payload = text
 	return block
 }
-
-

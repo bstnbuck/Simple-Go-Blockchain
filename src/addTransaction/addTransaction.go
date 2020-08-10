@@ -17,12 +17,12 @@ import (
 	*generates manually ... new transactions
 	*saves transaction in payload.gop file
 
- */
+*/
 
 func main() {
 	//if file doesn't exist create it
 	filename := "src/addTransaction/payload.gop"
-	if _, err := os.Stat(filename); err != nil{
+	if _, err := os.Stat(filename); err != nil {
 		file, err := os.Create(filename)
 		if err != nil {
 			fmt.Println(err)
@@ -36,6 +36,7 @@ func main() {
 
 	//while loop as long as you want to stop it
 	stop := false
+
 	for stop == false {
 		var mode, times, again int
 		fmt.Println("Starting... Generate transactions automatically or manually? [1] = automatically, [2] = manually, [99] = Stop")
@@ -61,7 +62,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Error in Input: ", err)
 			}
-			if again == 1{
+			if again == 1 {
 				continue
 			}
 
@@ -86,7 +87,7 @@ func main() {
 			if err != nil {
 				fmt.Println("Error in Input: ", err)
 			}
-			if again == 1{
+			if again == 1 {
 				continue
 			}
 
@@ -101,7 +102,7 @@ func main() {
 		}
 	}
 	fmt.Println("Press ENTER to continue... ")
-	_ ,err := fmt.Scanln()
+	_, err := fmt.Scanln()
 	//_ ,err = fmt.Scanln()		//only for windows
 	if err != nil {
 		fmt.Println(err)
@@ -109,7 +110,7 @@ func main() {
 }
 
 //for manually generation
-func runMan(times int, filename string)error{
+func runMan(times int, filename string) error {
 	//open file with write privileges
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0755)
 	if err != nil {
@@ -119,28 +120,28 @@ func runMan(times int, filename string)error{
 	var amount float32
 	//make a new string array with "times" sets
 	transactions := make([]string, times)
-	i:=0
+	i := 0
 	//ask as long as you like to enter new transactions
-	for i < times{
+	for i < times {
 		i++
-		fmt.Println("Next Transaction number: ",i)
+		fmt.Println("Next Transaction number: ", i)
 		fmt.Print("From: ")
 		//because of differences between Windows (\r\n) and Linux (\n) decide the correct
 		buffer := bufio.NewReader(os.Stdin)
 		//from, err := buffer.ReadString('\r')		//only for windows
-		from, err := buffer.ReadString('\n')			//for linux
+		from, err := buffer.ReadString('\n') //for linux
 		if err != nil {
 			return err
 		}
 
 		fmt.Print("To: ")
 		//to, err := buffer.ReadString('\r')		//only for windows
-		to, err := buffer.ReadString('\n')		//for linux
+		to, err := buffer.ReadString('\n') //for linux
 		if err != nil {
 			return err
 		}
 
-		fmt.Print( "Amount: ")
+		fmt.Print("Amount: ")
 		_, err = fmt.Scan(&amount)
 		if err != nil {
 			return err
@@ -148,26 +149,26 @@ func runMan(times int, filename string)error{
 
 		//adjustments for Windows and Linux
 		//transactions[i-1] = fmt.Sprintf("New Transaction Timestamp:%v\n From:%s To:%s Transfer:%f\n", time.Now(), from[1:len(from)-1], to[1:], amount) 	//only for windows
-		transactions[i-1] = fmt.Sprintf("New Transaction Timestamp:%v\n From:%s To:%s Transfer:%f\n", time.Now(), from[:len(from)-1], to, amount)		//for linux
+		transactions[i-1] = fmt.Sprintf("New Transaction Timestamp:%v\n From:%s To:%s Transfer:%f\n", time.Now(), from[:len(from)-1], to, amount) //for linux
 	}
 	//add the entered transactions to file
 	err = addTransaction(file, transactions)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
 	err = file.Close()
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	return nil
 }
 
 //generates automatically new transactions
-func runAuto(times int, filename string)error{
+func runAuto(times int, filename string) error {
 
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0755)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
@@ -175,23 +176,23 @@ func runAuto(times int, filename string)error{
 	transactions := generateTransactions(times)
 	//append them to the file
 	err = addTransaction(file, transactions)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
 	err = file.Close()
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	return nil
 }
 
 //make random transactions
-func generateTransactions(count int)[]string {
+func generateTransactions(count int) []string {
 	//var from, to string
 	output := make([]string, count)
-	i:=0
-	for i < count{
+	i := 0
+	for i < count {
 		i++
 		output[i-1] = fmt.Sprintf("New Transaction Timestamp:%v\n From:%s To:%s\n Transfer:%f\n", time.Now(), GenerateRandomString(), GenerateRandomString(), GenerateRandomFloat())
 	}
@@ -199,14 +200,17 @@ func generateTransactions(count int)[]string {
 }
 
 //adds transactions to file
-func addTransaction(file io.Writer, transaction []string)error{
+func addTransaction(file io.Writer, transaction []string) error {
 	writer := bufio.NewWriter(file)
 
 	//iterate trough transaction array and move them to file
 	for _, output := range transaction {
 		_, err := fmt.Fprintf(writer, "%v", output)
+		if err != nil {
+			return err
+		}
 		err = writer.Flush()
-		if err != nil{
+		if err != nil {
 			return err
 		}
 	}
@@ -214,7 +218,7 @@ func addTransaction(file io.Writer, transaction []string)error{
 }
 
 //generates some random floats
-func GenerateRandomFloat()float32{
+func GenerateRandomFloat() float32 {
 	rand.Seed(time.Now().UnixNano())
 	random := rand.Float32()
 
@@ -225,14 +229,14 @@ func GenerateRandomFloat()float32{
 // securely generated random string.
 func GenerateRandomString() string {
 	b := GenerateRandomBytes(12)
-	return base64.URLEncoding.EncodeToString(b)		//encode random byte array to base64 encoding
+	return base64.URLEncoding.EncodeToString(b) //encode random byte array to base64 encoding
 }
 
 func GenerateRandomBytes(n int) []byte {
-	b := make([]byte, n)		//new byte array of length n
-	_, err := crand.Read(b)		//fill array with random
-	if err != nil {				//if error print
+	b := make([]byte, n)    //new byte array of length n
+	_, err := crand.Read(b) //fill array with random
+	if err != nil {         //if error print
 		println(err)
 	}
-	return b					//return array
+	return b //return array
 }

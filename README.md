@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/bstnbuck/Simple-Go-Blockchain.svg?branch=master)](https://travis-ci.org/bstnbuck/Simple-Go-Blockchain)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bstnbuck/Simple-Go-Blockchain/blob/master/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bstnbuck/Simple-Go-Blockchain)](https://goreportcard.com/report/github.com/bstnbuck/Simple-Go-Blockchain)
 # Simple Go Blockchain
 
 >**Not all functions are implemented yet! This program should only show the principle of blockchains.**
