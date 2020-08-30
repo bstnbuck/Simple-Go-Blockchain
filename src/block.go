@@ -16,9 +16,8 @@ type Block struct {
 	HashPoW        string
 	textNoncePoW   string
 	PrevHashHeader string
-
 	//Hash of the header
-	hashHeader string
+	blockHash string
 
 	//Data
 	payload string
@@ -39,10 +38,7 @@ func makeBlock(nulls string) (string, Block, uint64) {
 	//Define Header elements
 	block.Index = int64(len(Blockchain))
 	block.Timestamp = time.Now()
-	block.PrevHashHeader = Blockchain[len(Blockchain)-1].hashHeader
-
-	//make hash of Header elements
-	block.hashHeader = makeBlockHash(block)
+	block.PrevHashHeader = makeLastBlockHeaderHash(Blockchain[len(Blockchain)-1])
 
 	/* removed at 05/04/20, instead use real transactions
 	//Define Payload, a bit more than one string please;)
@@ -57,9 +53,12 @@ func makeBlock(nulls string) (string, Block, uint64) {
 	*/
 	block.payload = getTransactions()
 
+	//make hash of Header elements
+	block.blockHash = makeBlockHash(block)
+
 	//make readable output
-	output := fmt.Sprintf("New Block Index:%v Timestamp:%v \nHashPoW:%v \nText&Nonce:%v \nPrevHashHeader:%v \nHashHeader:%v \nData:\n%v",
-		block.Index, block.Timestamp, block.HashPoW, block.textNoncePoW, block.PrevHashHeader, block.hashHeader, block.payload)
+	output := fmt.Sprintf("New Block Index:%v Timestamp:%v \nHashPoW:%v \nText&Nonce:%v \nPrevHashHeader:%v \nBlockHash:%v \nData:\n%v",
+		block.Index, block.Timestamp, block.HashPoW, block.textNoncePoW, block.PrevHashHeader, block.blockHash, block.payload)
 
 	//return the output and block
 	return output, block, count
@@ -68,7 +67,15 @@ func makeBlock(nulls string) (string, Block, uint64) {
 //function to make hash of the block header
 func makeBlockHash(block Block) string {
 	hash := sha512.New()
-	hash.Write([]byte(strconv.FormatInt(block.Index, 10) + block.Timestamp.String() + block.HashPoW + block.textNoncePoW + block.PrevHashHeader))
+	hash.Write([]byte(strconv.FormatInt(block.Index, 10) + block.Timestamp.String() + block.HashPoW + block.textNoncePoW + block.PrevHashHeader + block.payload))
+	hashHeader := hex.EncodeToString(hash.Sum(nil))
+	return hashHeader
+}
+
+//make the hash of the previous block header including the blockHash of them
+func makeLastBlockHeaderHash(block Block) string {
+	hash := sha512.New()
+	hash.Write([]byte(strconv.FormatInt(block.Index, 10) + block.Timestamp.String() + block.HashPoW + block.textNoncePoW + block.PrevHashHeader + block.blockHash))
 	hashHeader := hex.EncodeToString(hash.Sum(nil))
 	return hashHeader
 }
@@ -76,7 +83,7 @@ func makeBlockHash(block Block) string {
 //proof if the new created block is valid
 func isNewBlockValid(newBlock Block) bool {
 	lastBlock := Blockchain[len(Blockchain)-1]
-	if lastBlock.hashHeader == newBlock.PrevHashHeader && lastBlock.Index+1 == newBlock.Index && newBlock.hashHeader == makeBlockHash(newBlock) {
+	if lastBlock.Index+1 == newBlock.Index && makeLastBlockHeaderHash(lastBlock) == newBlock.PrevHashHeader && newBlock.blockHash == makeBlockHash(newBlock) {
 		return true
 	}
 	return false
@@ -96,7 +103,7 @@ func makeGenesisBlock() Block {
 	block.PrevHashHeader = "0"
 
 	//make hash of Header elements
-	block.hashHeader = makeBlockHash(block)
+	block.blockHash = makeBlockHash(block)
 
 	//Define Data
 	block.payload = text
